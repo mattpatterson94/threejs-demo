@@ -1,9 +1,8 @@
 import { App } from './src/js/app'
 
-const element = document.getElementById('root') ?? document.body
+const canvas = document.getElementById('root') as HTMLCanvasElement
 
-const app = new App(element)
+const app = new App(canvas)
 
 app.render()
-app.createCard()
 app.animate()

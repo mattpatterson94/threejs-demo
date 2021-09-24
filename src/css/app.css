@@ -1,9 +1,10 @@
 body {
-  background: #B4D9EF;
+  background-color: #B4D9EF;
   margin: 0;
 }
 
 #root {
   width: 100vw;
   height: 100vh;
+  display: block;
 }

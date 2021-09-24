@@ -1,60 +1,75 @@
 import * as THREE from 'three'
-
-class Card {
-  readonly cube: THREE.Mesh
-
-  constructor () {
-    const geometry = new THREE.BoxGeometry(2, 2, 2)
-    const material = new THREE.MeshPhongMaterial({ color: 0xB4D9EF })
-    this.cube = new THREE.Mesh(geometry, material)
-  }
-
-  animate (): void {
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    this.cube.rotation.x += 0.01
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    this.cube.rotation.y += 0.01
-  }
-}
+import { Card } from './card'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 export class App {
-  readonly element: HTMLElement
   readonly renderer: THREE.WebGLRenderer
+  readonly canvas: HTMLCanvasElement
   readonly camera: THREE.PerspectiveCamera
   readonly scene: THREE.Scene
   readonly light: THREE.DirectionalLight
+  readonly controls: OrbitControls
   card?: Card
 
-  constructor (element: HTMLElement) {
-    this.element = element
-    this.renderer = new THREE.WebGLRenderer()
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  constructor (canvas: HTMLCanvasElement) {
+    this.canvas = canvas
+    this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true })
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5)
     this.light = new THREE.DirectionalLight(0xffffff)
     this.scene = new THREE.Scene()
-  }
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
-  createCard (): void {
-    this.card = new Card()
-
-    this.light.position.set(0, 1, 1).normalize()
-    this.scene.add(this.light)
-    this.scene.add(this.card.cube)
-
-    this.camera.position.z = 5
+    this.configure()
   }
 
   render (): void {
+    this.renderer.render(this.scene, this.camera)
+  }
+
+  private configure (): void {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.element.appendChild(this.renderer.domElement)
+    this.renderer.autoClearColor = false
+    this.light.position.set(-1, 2, 4).normalize()
+    this.camera.position.set(0, 0, 3)
+    this.scene.add(this.light)
+
+    this.setBackground()
+    this.setControls()
+    this.createCard()
+  }
+
+  private setBackground (): void {
+    const loader = new THREE.CubeTextureLoader()
+    const texture = loader.load([
+      require('../img/pos-x.jpg'),
+      require('../img/neg-x.jpg'),
+      require('../img/pos-y.jpg'),
+      require('../img/neg-y.jpg'),
+      require('../img/pos-z.jpg'),
+      require('../img/neg-z.jpg')
+    ])
+    this.scene.background = texture
+  }
+
+  private setControls (): void {
+    this.controls.target.set(0, 0, 0)
+    this.controls.update()
+  }
+
+  private createCard (): void {
+    this.card = new Card()
+
+    this.scene.add(this.card.cube)
   }
 
   animate (): void {
-    const animateFn = (): void => {
-      requestAnimationFrame(animateFn)
+    const animatefn = (): void => {
       this.card?.animate()
+      requestAnimationFrame(animatefn)
+
       this.renderer.render(this.scene, this.camera)
     }
 
-    animateFn()
+    animatefn()
   }
 }
