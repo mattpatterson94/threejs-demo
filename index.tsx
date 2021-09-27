@@ -1,8 +1,10 @@
-import { App } from './src/js/app'
+import * as React from 'react'
+import { render } from 'react-dom'
+import App from './src/js/app'
 
-const canvas = document.getElementById('root') as HTMLCanvasElement
-
-const app = new App(canvas)
-
-app.render()
-app.animate()
+render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+)

@@ -15,7 +15,8 @@ export const buildOptions: esbuild.BuildOptions = {
   publicPath: 'dist',
   loader: {
     '.png': 'file',
-    '.jpg': 'file'
+    '.jpg': 'file',
+    '.glb': 'file'
   }
 }
 
