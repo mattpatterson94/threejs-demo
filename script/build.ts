@@ -16,7 +16,8 @@ export const buildOptions: esbuild.BuildOptions = {
   loader: {
     '.png': 'file',
     '.jpg': 'file',
-    '.glb': 'file'
+    '.glb': 'file',
+    '.gltf': 'file'
   }
 }
 

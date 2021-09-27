@@ -1,22 +1,9 @@
 import * as THREE from 'three'
-import React, { Fragment, ReactElement, Suspense, useRef } from 'react'
+import React, { Fragment, ReactElement, Suspense, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Reflector, Environment, Loader } from '@react-three/drei'
-import Bottles from './bottles'
-import { geometry, material } from './store'
-
-function Sphere (props: JSX.IntrinsicElements['mesh']): ReactElement {
-  return (
-    <mesh
-      receiveShadow
-      castShadow
-      {...props}
-      renderOrder={-2000000}
-      geometry={geometry.sphere}
-      material={material.sphere}
-    />
-  )
-}
+import Spheres from './components/spheres'
+import PicnicTable from './components/picnic-table'
 
 function Zoom (): null {
   const vec = new THREE.Vector3(0, 0, 100)
@@ -31,32 +18,12 @@ function Zoom (): null {
   })
 }
 
-function Spheres (): ReactElement {
-  const group = useRef<THREE.Mesh>(null!)
-
-  useFrame(() => {
-    group.current.children[0].position.x = THREE.MathUtils.lerp(group.current.children[0].position.x, -18, 0.02)
-    group.current.children[1].position.x = THREE.MathUtils.lerp(group.current.children[1].position.x, -10, 0.01)
-    group.current.children[2].position.x = THREE.MathUtils.lerp(group.current.children[2].position.x, 19, 0.03)
-    group.current.children[3].position.x = THREE.MathUtils.lerp(group.current.children[3].position.x, 10, 0.04)
-  })
-
-  return (
-    <group ref={group}>
-      <Sphere position={[-40, 1, 10]} />
-      <Sphere position={[-20, 10, -20]} scale={[10, 10, 10]} />
-      <Sphere position={[40, 3, 5]} scale={[3, 3, 3]} />
-      <Sphere position={[30, 0.75, 10]} scale={[0.75, 0.75, 0.75]} />
-    </group>
-  )
-}
-
 export default function App (): ReactElement {
   return (
     <Fragment>
       <Canvas dpr={[1, 1.5]} mode={'concurrent'} shadows camera={{ position: [-500, 0, 90], fov: 100 }}>
-        <fog attach="fog" args={['#a0a0a0', 100, 150]} />
-        <color attach="background" args={['#a0a0a0']} />
+        <fog attach="fog" args={['#87CEEB', 100, 150]} />
+        <color attach="background" args={['#87CEEB']} />
         <spotLight
           penumbra={1}
           angle={0.35}
@@ -66,10 +33,10 @@ export default function App (): ReactElement {
           shadow-mapSize-width={256}
           shadow-mapSize-height={256}
         />
-        <pointLight position={[10, -10, 5]} intensity={1} color="#9C640C" />
+        <pointLight position={[10, -10, 5]} intensity={1} color="#009A17" />
         <Suspense fallback={null}>
           <group position={[0, -12, 0]}>
-            <Bottles />
+            <PicnicTable />
             <Spheres />
             <mesh
               rotation-x={-Math.PI / 2}
@@ -91,7 +58,7 @@ export default function App (): ReactElement {
               maxDepthThreshold={1}
               rotation-x={-Math.PI / 2}
               args={[100, 100]}>
-              {(Material, props) => <Material {...props} color="#a0a0a0" metalness={0} roughness={0.5} />}
+              {(Material, props) => <Material {...props} color="#009A17" metalness={0} roughness={0.5} />}
             </Reflector>
           </group>
           <Environment preset="apartment" />
